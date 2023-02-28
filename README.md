@@ -2,6 +2,8 @@
 
 A javascript github action to add an issue to the first project on the repository.
 
+> **NOTE:** ⚠️ If you are using GitHub projects (classic), use the older version [v0.1](https://github.com/geeknees/ga-issues-projects/tree/v0.1).
+
 # Usage
 
 ```yaml
@@ -11,7 +13,7 @@ on:
   issues:
     types:
     - opened
- 
+
 jobs:
   add_to_project:
     runs-on: ubuntu-latest
@@ -21,7 +23,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         repository: ${{ github.repository }}
         issue: ${{ github.event.issue.number }}
-        issue_project_ids: list_of_project_ids
+        issue_project_ids: list_of_project_ids # Enter project IDs separated by commas
 
 ```
 
@@ -29,42 +31,36 @@ jobs:
 
 https://developer.github.com/v4/explorer/
 
+
 ```graphql
-query {
-    repository(owner:"owner" name:"name") {
-        projects(first:10) {
-            nodes {
-              	id
-              	name
-            }
+{
+  user(login: "username") {
+    projectsV2(first: 100) {
+      edges {
+        node {
+          id
+          title
+          closed
         }
+      }
     }
+  }
 }
 ```
 
 ```graphql
-query {
-    user(login: "username") {
-        projects(first:10) {
-            nodes {
-              	id
-              	name
-            }
+{
+  organization(login: "organization") {
+    projectsV2(first: 100) {
+      edges {
+        node {
+          id
+          title
+          closed
         }
+      }
     }
-}
-```
-
-```graphql
-query {
-    organization(login: "organization") {
-        projects(first:10) {
-            nodes {
-              	id
-              	name
-            }
-        }
-    }
+  }
 }
 ```
 
@@ -74,7 +70,7 @@ query {
 
 1. [Create a personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 1. [Create a secret containing the personal access token, call it GITHUB_ACTION](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
-1. Change the repo-token in the workflow .yml to reference your new token name:
+1. Change the repo-token in the workflow.yml to reference your new token name:
 
 ```
         github_token: ${{ secrets.GITHUB_ACTION }}

@@ -11,7 +11,7 @@ async function github_query(github_token, query, variables) {
       Accept: 'application/json',
       Authorization: `bearer ${github_token}`
     }
-  }).then(function(response) {
+  }).then(function (response) {
     return response.json()
   })
 }
@@ -53,7 +53,7 @@ async function run() {
 
     query = `
     mutation($issueId:ID!, $projectIds:[ID!]) {
-      updateIssue(input:{id:$issueId, projectIds:$projectIds}) {
+      addProjectV2ItemById(input: {projectId: $projectIds, contentId: $issueId}) {
         issue {
           id
         }
