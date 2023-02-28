@@ -51,17 +51,20 @@ async function run() {
       )}`
     )
 
-    query = `
-    mutation($issueId:ID!, $projectIds:[ID!]) {
-      addProjectV2ItemById(input: {projectId: $projectIds, contentId: $issueId}) {
-        issue {
-          id
+    projectIds.map(async (projectId) => {
+      query = `
+      mutation($issueId:ID!, $projectId:ID!) {
+        addProjectV2ItemById(input: {projectId: $projectId, contentId: $issueId}) {
+          item {
+            id
+          }
         }
-      }
-    }`
-    variables = { issueId, projectIds }
-    response = await github_query(github_token, query, variables)
-    console.log(util.inspect(response, { showHidden: false, depth: null }))
+      }`
+      variables = { issueId, projectId }
+      response = await github_query(github_token, query, variables)
+      console.log(util.inspect(response, { showHidden: false, depth: null }))
+    })
+
     console.log(`Done!`)
   } catch (error) {
     core.setFailed(error.message)
